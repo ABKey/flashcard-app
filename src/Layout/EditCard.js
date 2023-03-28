@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { readCard, readDeck, updateCard } from "../utils/api/index";
+import CardForm from "./CardForm";
 
 
 function EditCard() {
     const history = useHistory();
-    const [card, setCard] = useState({id: "", front: "", back: "", deckId: "" });
+    const [card, setCard] = useState({front: "", back: "", deckId: "" });
     const [deck, setDeck] = useState({});
     const {deckId} = useParams();
     const {cardId} = useParams();
     
+    /*
     const handleFrontChange = (event) => {
-        setCard({...card, front: event.target.value})
+        setCard(card, {front: event.target.value})
     }
 
     const handleBackChange = (event) => {
-        setCard({...card, back: event.target.value});
+        setCard(card, {back: event.target.value});
     }
+    */
+
     useEffect(() => {
     
         async function loadDeck() {
@@ -34,18 +38,27 @@ function EditCard() {
         loadCard();
     }, [cardId]);
     
-    function cancelHandler(event) {
-        event.preventDefault();
-        history.push(`/decks/${deck.id}`);
-    }
-    
     const submitHandler = async (event) => {
         event.preventDefault();
         await updateCard(card);
         history.push(`/decks/${deck.id}`);
     };
+
+    function cancelHandler(event) {
+        event.preventDefault();
+        history.push(`/decks/${deck.id}`);
+    };
     
-    console.log(card.front)
+    const editForm = card.id ? (
+        <CardForm
+            onDone={cancelHandler}
+            onSubmit={submitHandler}
+            initialState={card}
+            doneButton="Cancel"
+        />
+    ) : (
+    <p>Loading...</p>
+    )
     
     return (
     <div>
@@ -64,36 +77,7 @@ function EditCard() {
         </nav>
         
         <h2>Edit Card</h2>
-        <form onSubmit={submitHandler}>
-            <div>
-                <div className="mb-3">
-                    <label htmlFor="front" className="form-label">Front</label>
-                    <textarea
-                        className="form-control"
-                        id="front"
-                        type="text"
-                        name="front"
-                        value={card.front}
-                        onChange={handleFrontChange}
-                    />
-                </div>
-                    <div className="mb-3">
-                    <label htmlFor="back" className="form-label">Back</label>
-                    <textarea
-                        className="form-control"
-                        id="back"
-                        type="text"
-                        name="back"
-                        value={card.back}
-                        onChange={handleBackChange}
-                    />
-                </div>
-            </div>
-            <div className="mt-2">
-                <button className="btn btn-secondary text-white" type="button" onClick={cancelHandler}>Cancel</button>
-                <button type="submit" className="btn btn-primary ml-2">Save</button>
-            </div>
-        </form>
+        {editForm}
     </div>
         );
     }

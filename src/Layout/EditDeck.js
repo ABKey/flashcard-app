@@ -16,7 +16,6 @@ function EditDeck() {
         async function loadDeck() {
             const response = await readDeck(deckId);
              setDeck(response);
-             console.log(response);
         }
         loadDeck();
     }, [deckId]);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { readDeck, createCard } from "../utils/api/index";
+import CardForm from "./CardForm";
 
 
 function AddCard(){
@@ -54,36 +55,12 @@ return (
             </ol>
         </nav>
         <h2>{deck.name}: Add Card</h2>
-            <form onSubmit={submitHandler}>
-            <div>
-                <div className="mb-3">
-                    <label htmlFor="front" className="form-label">Front</label>
-                    <textarea
-                        className="form-control"
-                        id="front"
-                        type="text"
-                        name="front"
-                        value={card.front}
-                        onChange={handleFrontChange}
-                    />
-                </div>
-                    <div className="mb-3">
-                    <label htmlFor="back" className="form-label">Back</label>
-                    <textarea
-                        className="form-control"
-                        id="back"
-                        type="text"
-                        name="back"
-                        value={card.back}
-                        onChange={handleBackChange}
-                    />
-                </div>
-            </div>
-            <div className="mt-2">
-                <button className="btn btn-secondary text-white" type="button" onClick={cancelHandler}>Cancel</button>
-                <button type="submit" className="btn btn-primary ml-2">Save</button>
-            </div>
-        </form>
+            <CardForm 
+                handleFrontChange={handleFrontChange} 
+                handleBackChange={handleBackChange} 
+                cancelHandler={cancelHandler} 
+                submitHandler={submitHandler} 
+            />
     </div>
     )
 }
