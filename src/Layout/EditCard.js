@@ -4,22 +4,12 @@ import { readCard, readDeck, updateCard } from "../utils/api/index";
 import CardForm from "./CardForm";
 
 
-function EditCard() {
+function EditCard({initialState}) {
     const history = useHistory();
-    const [card, setCard] = useState({front: "", back: "", deckId: "" });
+    const [card, setCard] = useState(initialState);
     const [deck, setDeck] = useState({});
     const {deckId} = useParams();
     const {cardId} = useParams();
-    
-    /*
-    const handleFrontChange = (event) => {
-        setCard(card, {front: event.target.value})
-    }
-
-    const handleBackChange = (event) => {
-        setCard(card, {back: event.target.value});
-    }
-    */
 
     useEffect(() => {
     
@@ -37,9 +27,10 @@ function EditCard() {
         }
         loadCard();
     }, [cardId]);
-    
+
     const submitHandler = async (event) => {
         event.preventDefault();
+        setCard({...card, front: event.target.value, back: event.target.value})
         await updateCard(card);
         history.push(`/decks/${deck.id}`);
     };
@@ -51,7 +42,7 @@ function EditCard() {
     
     const editForm = card.id ? (
         <CardForm
-            onDone={cancelHandler}
+            onCancel={cancelHandler}
             onSubmit={submitHandler}
             initialState={card}
             doneButton="Cancel"

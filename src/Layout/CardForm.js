@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 
-export default function CardForm({onSubmit, onDone, onCancel, deckName, initialState, doneButton = "Done"}) {
+export default function CardForm({onSubmit, onCancel, deckName, initialState}) {
 
 const [card, setCard] = useState(initialState);
 
@@ -46,8 +46,8 @@ return (
                 </div>
             </div>
             <div className="mt-2">
-                <button className="btn btn-secondary text-white" type="button" onClick={onCancel}>Cancel</button>
-                <button type="submit" className="btn btn-primary mx-1" onClick={onDone}>{doneButton}</button>
+                <button className="btn btn-secondary text-white" type="button" onClick={() => onCancel()}>Cancel</button>
+                <button type="submit" className="btn btn-primary mx-1">Save</button>
             </div>
         </form>
     </div>

@@ -4,9 +4,9 @@ import { readDeck, createCard } from "../utils/api/index";
 import CardForm from "./CardForm";
 
 
-function AddCard(){
+function AddCard({initialState}){
 const [deck, setDeck] = useState({});
-const [card, setCard] = useState({front:"", back:"", deckId:""});
+const [card, setCard] = useState(initialState);
 const history = useHistory();
 const {deckId} = useParams();
 
@@ -18,18 +18,9 @@ const {deckId} = useParams();
         loadDeck();
     }, [deckId]);
 
-    const handleFrontChange = (event) => {
-        event.preventDefault();
-        setCard({...card, front: event.target.value})
-    };
-
-    const handleBackChange = (event) => {
-        event.preventDefault();
-        setCard({...card, back: event.target.value});
-    }
-
     const submitHandler = async (event) => {
         event.preventDefault();
+        setCard({...card, front: event.target.value, back: event.target.value})
         const response = await createCard(deckId, card);
         await readDeck(response.deckId);
         history.push(`/decks/${deck.id}`);
@@ -38,6 +29,17 @@ const {deckId} = useParams();
     const cancelHandler = () => {
         history.push(`/decks/${deck.id}`);
     }
+
+    const editForm = card.id ? (
+        <CardForm
+            onCancel={cancelHandler}
+            onSubmit={submitHandler}
+            initialState={card}
+            doneButton="Cancel"
+        />
+    ) : (
+    <p>Loading...</p>
+    )
 
 return (
     <div>
@@ -55,12 +57,7 @@ return (
             </ol>
         </nav>
         <h2>{deck.name}: Add Card</h2>
-            <CardForm 
-                handleFrontChange={handleFrontChange} 
-                handleBackChange={handleBackChange} 
-                cancelHandler={cancelHandler} 
-                submitHandler={submitHandler} 
-            />
+            {editForm}
     </div>
     )
 }
