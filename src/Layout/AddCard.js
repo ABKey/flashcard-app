@@ -1,60 +1,60 @@
-import React, { useState, useEffect } from "react";
-import { Link, useHistory, useParams } from "react-router-dom";
-import { readDeck, createCard } from "../utils/api/index";
-import CardForm from "./CardForm";
+import React, { useEffect, useState } from "react";
+import { createCard, readDeck } from "../utils/api/index";
+import { Link, useParams } from "react-router-dom";
+import CardForm from "./CardForm"
 
+export default function AddCard() {
 
-function AddCard({initialState}){
-const [deck, setDeck] = useState({});
-const [card, setCard] = useState(initialState);
-const history = useHistory();
-const {deckId} = useParams();
+  const [deck, setDeck] = useState([]);
+  const [card, setCard] = useState({ front: "", back: "", deckId: "" });
+  const { deckId } = useParams()
 
-    useEffect(() => {
-        async function loadDeck(){
-            const response = await readDeck(deckId);
-            setDeck(response);
-        }
-        loadDeck();
-    }, [deckId]);
+  useEffect(() => {
+    const deckInfo = async () => {
+      const response = await readDeck(deckId);
+      setDeck(() => response);
+    };
+    deckInfo();
+  }, [deckId]);
 
-    const submitHandler = async (event) => {
-        event.preventDefault();
-        setCard({...card, front: event.front, back: event.back})
-        const response = await createCard(deckId, card);
-        await readDeck(response.deckId);
-        history.push(`/decks/${deck.id}`);
-    }
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setCard({ ...card, deckId: deckId });
+    await createCard(deckId, card);
+    setCard({ front: "", back: "", deckId: "" });
+  };
 
-    const cancelHandler = () => {
-        history.push(`/decks/${deck.id}`);
-    }
+  function changeFront(event) {
+    setCard({ ...card, front: event.target.value });
+  }
 
-return (
-    <div>
-        <nav aria-label="breadcrumb">
-            <ol className="breadcrumb">
-                 <li className="breadcrumb-item">
-                     <Link to="/">
-                    Home
-                    </Link>
-                </li>
-                <li className="breadcrumb-item">
-                    <Link to={`/decks/${deck.id}`}>{deck.name}</Link>
-                </li>
-                <li className="breadcrumb-item active" aria-current="page">Add Card</li>
-            </ol>
-        </nav>
-        <h2>{deck.name}: Add Card</h2>
-        {card.id (
-        <CardForm
-            onCancel={cancelHandler}
-            onSubmit={submitHandler}
-            initialState={initialState}
-        />
-        )}
+  function changeBack(event) {
+    setCard({ ...card, back: event.target.value });
+  }
+
+  return (
+    <div className="col-9 mx-auto">
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            <Link to="/">Home</Link>
+          </li>
+
+          <li className="breadcrumb-item">
+            <Link to={`/decks/${deckId}`}>{deck.name}</Link>
+          </li>
+
+          <li className="breadcrumb-item">Add Card</li>
+        </ol>
+      </nav>
+
+      <h4>{deck.name}: Add Card</h4>
+      <CardForm
+        submitHandler={handleSubmit}
+        card={card}
+        changeFront={changeFront}
+        changeBack={changeBack}
+      />
     </div>
-    )
+  );
 }
-
-export default AddCard;

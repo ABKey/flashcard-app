@@ -1,55 +1,55 @@
-import React, { useState } from 'react';
+import React from "react";
+import { useHistory } from "react-router-dom";
 
+export default function CardForm({ submitHandler, card = {}, changeFront, changeBack }) {
+  const history = useHistory();
 
-export default function CardForm({onSubmit, onCancel, deckName, initialState}) {
+  function cardFront() {
+    return card.front ? card.front : "";
+  }
 
-const [card, setCard] = useState(initialState);
+  function cardBack() {
+    return card.back ? card.back : "";
+  }
 
-function changeHandler({ target: {name, value} }){
-    setCard((prevState) => ({...prevState, [name]: value, }))
-};
-
-function onSubmitHandler(event) {
-    event.preventDefault();
-    onSubmit({...card});
-    setCard({front: "", back: ""});
-}
-
-return (
-        <div>
-            <form onSubmit={onSubmitHandler} className="card-front">
-            <div>
-                <legend>{deckName}</legend>
-                <div className="form-group">
-                    <label htmlFor="front" className="form-label">Front</label>
-                    <textarea
-                        className="form-control"
-                        id="front"
-                        type="text"
-                        name="front"
-                        placeholder="Front side of Card"
-                        value={card.front}
-                        onChange={changeHandler}
-                    />
-                </div>
-                    <div className="mb-3">
-                    <label htmlFor="back" className="form-label">Back</label>
-                    <textarea
-                        className="form-control"
-                        id="back"
-                        type="text"
-                        name="back"
-                        placeholder="Back side of Card"
-                        value={card.back}
-                        onChange={changeHandler}
-                    />
-                </div>
-            </div>
-            <div className="mt-2">
-                <button className="btn btn-secondary text-white" type="button" onClick={() => onCancel()}>Cancel</button>
-                <button type="submit" className="btn btn-primary mx-1">Save</button>
-            </div>
-        </form>
-    </div>
-)
+  return (
+    <form id="cardForm">
+      <div className="form-group">
+        <label>Front</label>
+        <textarea
+          className="form-control"
+          id="front"
+          rows="3"
+          value={cardFront()}
+          onChange={changeFront}
+          placeholder="Front side of card"
+        ></textarea>
+      </div>
+      <div className="form-group">
+        <label>Back</label>
+        <textarea
+          className="form-control"
+          id="exampleFormControlTextarea1"
+          rows="3"
+          value={cardBack()}
+          onChange={changeBack}
+          placeholder="Back side of card"
+        ></textarea>
+      </div>
+      <button
+        className="btn btn-secondary ml-2"
+        type="button"
+        onClick={() => history.go(-1)}
+      >
+        Done
+      </button>
+      <button
+        className="btn btn-primary ml-2"
+        type="submit"
+        onClick={submitHandler}
+      >
+        Save
+      </button>
+    </form>
+  );
 }
