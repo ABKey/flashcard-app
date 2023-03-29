@@ -20,7 +20,7 @@ const {deckId} = useParams();
 
     const submitHandler = async (event) => {
         event.preventDefault();
-        setCard({...card, front: event.target.value, back: event.target.value})
+        setCard({...card, front: event.front, back: event.back})
         const response = await createCard(deckId, card);
         await readDeck(response.deckId);
         history.push(`/decks/${deck.id}`);
@@ -29,17 +29,6 @@ const {deckId} = useParams();
     const cancelHandler = () => {
         history.push(`/decks/${deck.id}`);
     }
-
-    const editForm = card.id ? (
-        <CardForm
-            onCancel={cancelHandler}
-            onSubmit={submitHandler}
-            initialState={card}
-            doneButton="Cancel"
-        />
-    ) : (
-    <p>Loading...</p>
-    )
 
 return (
     <div>
@@ -57,7 +46,13 @@ return (
             </ol>
         </nav>
         <h2>{deck.name}: Add Card</h2>
-            {editForm}
+        {card.id (
+        <CardForm
+            onCancel={cancelHandler}
+            onSubmit={submitHandler}
+            initialState={initialState}
+        />
+        )}
     </div>
     )
 }

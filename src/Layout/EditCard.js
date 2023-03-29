@@ -30,7 +30,7 @@ function EditCard({initialState}) {
 
     const submitHandler = async (event) => {
         event.preventDefault();
-        setCard({...card, front: event.target.value, back: event.target.value})
+        setCard({...card, front: event.front, back: event.back})
         await updateCard(card);
         history.push(`/decks/${deck.id}`);
     };
@@ -39,17 +39,6 @@ function EditCard({initialState}) {
         event.preventDefault();
         history.push(`/decks/${deck.id}`);
     };
-    
-    const editForm = card.id ? (
-        <CardForm
-            onCancel={cancelHandler}
-            onSubmit={submitHandler}
-            initialState={card}
-            doneButton="Cancel"
-        />
-    ) : (
-    <p>Loading...</p>
-    )
     
     return (
     <div>
@@ -68,7 +57,13 @@ function EditCard({initialState}) {
         </nav>
         
         <h2>Edit Card</h2>
-        {editForm}
+        {card.id (
+        <CardForm
+            onCancel={cancelHandler}
+            onSubmit={submitHandler}
+            initialState={{}}
+        />
+        )}
     </div>
         );
     }
